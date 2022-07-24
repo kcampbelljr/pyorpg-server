@@ -557,7 +557,7 @@ def findOpenMapItemSlot(mapNum):
             return i
 
 def spawnItem(itemNum, itemVal, mapNum, x, y):
-    if itemNum is None or itemNum > MAX_ITEMS or mapNum is None or mapNum > MAX_MAPS:
+    if itemNum is None or int(itemNum) > MAX_ITEMS or mapNum is None or mapNum > MAX_MAPS:
         return
 
     # find open map item slot
@@ -566,13 +566,13 @@ def spawnItem(itemNum, itemVal, mapNum, x, y):
     spawnItemSlot(i, itemNum, itemVal, Item[itemNum].data1, mapNum, x, y)
 
 def spawnItemSlot(mapItemSlot, itemNum, itemVal, itemDur, mapNum, x, y):
-    if mapItemSlot is None or mapItemSlot > MAX_MAP_ITEMS or itemNum > MAX_ITEMS or mapNum is None or mapNum > MAX_MAPS:
+    if mapItemSlot is None or int(mapItemSlot or 0) > MAX_MAP_ITEMS or int(itemNum or 0) > MAX_ITEMS or mapNum is None or int(mapNum or 0) > MAX_MAPS:
         return
 
     i = mapItemSlot
 
     if i != None:
-        if itemNum <= MAX_ITEMS:
+        if int(itemNum or 0) <= MAX_ITEMS:
             mapItem[mapNum][i].num = itemNum
             mapItem[mapNum][i].value = itemVal
 
