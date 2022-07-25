@@ -150,7 +150,7 @@ def playerMove(index, direction, movement):
     if direction == DIR_UP:
         if getPlayerY(index) > 0:
             # TODO: Check if tilemap thing
-            if Map[getPlayerMap(index)].tile[getPlayerX(index)][getPlayerY(index)-1].type != TILE_TYPE_BLOCKED:
+            if Map[int(getPlayerMap(index))].tile[int(getPlayerX(index))][int(getPlayerY(index))-1].type != TILE_TYPE_BLOCKED:
                 setPlayerY(index, getPlayerY(index) - 1)
 
                 packet = json.dumps([{"packet": ServerPackets.SPlayerMove, "index": index, "x": getPlayerX(index), "y": getPlayerY(index), "direction": getPlayerDir(index), "moving": movement}])
@@ -163,7 +163,7 @@ def playerMove(index, direction, movement):
 
     elif direction == DIR_DOWN:
         if getPlayerY(index) < MAX_MAPY-1:
-            if Map[getPlayerMap(index)].tile[getPlayerX(index)][getPlayerY(index)+1].type != TILE_TYPE_BLOCKED:
+            if Map[int(getPlayerMap(index))].tile[int(getPlayerX(index))][int(getPlayerY(index))+1].type != TILE_TYPE_BLOCKED:
                 setPlayerY(index, getPlayerY(index) + 1)
 
                 packet = json.dumps([{"packet": ServerPackets.SPlayerMove, "index": index, "x": getPlayerX(index), "y": getPlayerY(index), "direction": getPlayerDir(index), "moving": movement}])
@@ -177,7 +177,7 @@ def playerMove(index, direction, movement):
 
     elif direction == DIR_LEFT:
         if getPlayerX(index) > 0:
-            if Map[getPlayerMap(index)].tile[getPlayerX(index)-1][getPlayerY(index)].type != TILE_TYPE_BLOCKED:
+            if Map[int(getPlayerMap(index))].tile[int(getPlayerX(index))-1][int(getPlayerY(index))].type != TILE_TYPE_BLOCKED:
                 setPlayerX(index, getPlayerX(index) - 1)
 
                 packet = json.dumps([{"packet": ServerPackets.SPlayerMove, "index": index, "x": getPlayerX(index), "y": getPlayerY(index), "direction": getPlayerDir(index), "moving": movement}])
@@ -191,7 +191,7 @@ def playerMove(index, direction, movement):
 
     elif direction == DIR_RIGHT:
         if getPlayerX(index) < MAX_MAPX-1:
-            if Map[getPlayerMap(index)].tile[getPlayerX(index)+1][getPlayerY(index)].type != TILE_TYPE_BLOCKED:
+            if Map[int(getPlayerMap(index))].tile[int(getPlayerX(index))+1][int(getPlayerY(index))].type != TILE_TYPE_BLOCKED:
                 setPlayerX(index, getPlayerX(index) + 1)
 
                 packet = json.dumps([{"packet": ServerPackets.SPlayerMove, "index": index, "x": getPlayerX(index), "y": getPlayerY(index), "direction": getPlayerDir(index), "moving": movement}])
@@ -204,7 +204,7 @@ def playerMove(index, direction, movement):
                 moved = True
 
     # check to see if the tile is a warp tile, and if so warp them
-    if Map[getPlayerMap(index)].tile[getPlayerX(index)][getPlayerY(index)].type == TILE_TYPE_WARP:
+    if Map[int(getPlayerMap(index))].tile[int(getPlayerX(index))][int(getPlayerY(index))].type == TILE_TYPE_WARP:
         mapNum = int(Map[getPlayerMap(index)].tile[getPlayerX(index)][getPlayerY(index)].data1)
         x      = int(Map[getPlayerMap(index)].tile[getPlayerX(index)][getPlayerY(index)].data2)
         y      = int(Map[getPlayerMap(index)].tile[getPlayerX(index)][getPlayerY(index)].data3)
@@ -557,7 +557,7 @@ def findOpenMapItemSlot(mapNum):
             return i
 
 def spawnItem(itemNum, itemVal, mapNum, x, y):
-    if itemNum is None or itemNum > MAX_ITEMS or mapNum is None or mapNum > MAX_MAPS:
+    if itemNum is None or int(itemNum) > MAX_ITEMS or mapNum is None or mapNum > MAX_MAPS:
         return
 
     # find open map item slot
@@ -566,13 +566,13 @@ def spawnItem(itemNum, itemVal, mapNum, x, y):
     spawnItemSlot(i, itemNum, itemVal, Item[itemNum].data1, mapNum, x, y)
 
 def spawnItemSlot(mapItemSlot, itemNum, itemVal, itemDur, mapNum, x, y):
-    if mapItemSlot is None or mapItemSlot > MAX_MAP_ITEMS or itemNum > MAX_ITEMS or mapNum is None or mapNum > MAX_MAPS:
+    if mapItemSlot is None or int(mapItemSlot or 0) > MAX_MAP_ITEMS or int(itemNum or 0) > MAX_ITEMS or mapNum is None or int(mapNum or 0) > MAX_MAPS:
         return
 
     i = mapItemSlot
 
     if i != None:
-        if itemNum <= MAX_ITEMS:
+        if int(itemNum or 0) <= MAX_ITEMS:
             mapItem[mapNum][i].num = itemNum
             mapItem[mapNum][i].value = itemVal
 
@@ -1238,7 +1238,7 @@ def playerMapGetItem(index):
 
     for i in range(MAX_MAP_ITEMS):
         # see if theres an item here
-        if mapItem[mapNum][i].num <= MAX_ITEMS:
+        if mapItem[mapNum][i].num != None:
             # check if item is at same location as the player
             if mapItem[mapNum][i].x == getPlayerX(index) and mapItem[mapNum][i].y == getPlayerY(index):
                 # find open slot
